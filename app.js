@@ -5,6 +5,7 @@ const mongo_url="mongodb://127.0.0.1:27017/wanderlust"
 const Listing =require("./models/listing.js");
 const path =require("path");
 const methodOverride = require("method-override");
+const ejsMate = require('ejs-mate')
 main().then(()=>{
     console.log("connected to database");
 })
@@ -25,7 +26,7 @@ app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method")); 
-
+app.engine('ejs', ejsMate);
 
 app.get("/", (req, res) => {
     res.send("hi,i am responce");
