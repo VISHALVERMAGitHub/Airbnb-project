@@ -91,6 +91,14 @@ app.patch("/listings/:id", async(req,res)=>{
     res.redirect(`/listings/${id}`);
 })
 
+// delete route
+app.delete("/listings/:id", async (req,res)=>{
+    let {id}=req.params;
+    let deletedlisting =await Listing.findByIdAndDelete({_id:id});
+    console.log(deletedlisting);
+    res.redirect("/listings");
+})
+
 
 // app.get("/testlisting", async (req, res) => {
 //     let list1=new Listing({
@@ -104,3 +112,4 @@ app.patch("/listings/:id", async(req,res)=>{
 //     console.log("listing saved");
 //     res.send("save data");
 // });
+
