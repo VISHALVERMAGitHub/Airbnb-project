@@ -1,0 +1,34 @@
+/* body{
+    background-color: rgb(213, 234, 59);
+} */
+
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+.fa-compass{
+    color: #fe424d;
+    size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+}
+
+/* footer */
+.f-info-link a{
+    text-decoration: none;
+    color: #222222 ;
+}
+.f-info-link a:hover{
+    text-decoration: underline;
+}
+
+.f-info{
+    height: 8rem;
+    display: flex;
+    background-color: antiquewhite;
+    
+}
+
+
+
