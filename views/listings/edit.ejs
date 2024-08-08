@@ -6,7 +6,7 @@
     <title>wanderlust</title>
 </head>
 <body>
-    <form method="post" action="/listings/<%= listing._id %>">
+    <form method="post" action="/listings/<%= listing._id %>?_method=patch">
         <input value="<%= listing.title %>" type="text" name="listing[title]"><br>
         <input value="<%= listing.image %>" type="text" name="listing[image]" ><br><br>
         <textarea  type="text" name="listing[description]"><%= listing.description %></textarea><br>

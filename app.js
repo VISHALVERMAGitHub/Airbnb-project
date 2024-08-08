@@ -70,7 +70,7 @@ app.post("/listings",async (req,res)=>{
 app.get("/listings/:id", async(req,res)=>{
     let {id}=req.params;
     let listing =await Listing.findById(id);
-    console.log(listing);
+    // console.log(listing);
     res.render("listings/show.ejs",{listing});
 });
  
@@ -83,13 +83,12 @@ app.get("/listings/:id/edit",async(req,res)=>{
 })
 //update route
 
-
-app.post("/listings/:id", async(req,res)=>{
+app.patch("/listings/:id", async(req,res)=>{
     let {id}=req.params;
-    let listing =req.body.listing;
-    console.log(listing);
-    // await Listing.findByIdAndUpdate(id,{...req.body.listing});
-    res.redirect("/listings");
+    // let listing =req.body.listing;
+    // console.log(listing);
+    await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    res.redirect(`/listings/${id}`);
 })
 
 
