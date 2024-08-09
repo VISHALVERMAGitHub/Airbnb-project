@@ -63,7 +63,7 @@ app.post("/listings",async (req,res)=>{
     // 1b method
     let listing =req.body.listing
     await new Listing(listing).save();
-    console.log(listing);
+    // console.log(listing);
     
     res.redirect("/listings");
 })

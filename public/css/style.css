@@ -21,12 +21,30 @@
 }
 .f-info-link a:hover{
     text-decoration: underline;
+    width: 100%;
 }
 
+.f-info-link ,.f-info-social,.f-info-brand{
+    
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.f-info-social i{
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
 .f-info{
+    text-align: center;
     height: 8rem;
     display: flex;
     background-color: antiquewhite;
+    /* wrap: This property is used to break the flex item into multiples lines. It makes flex items wrap to multiple lines according to flex item width.  */
+    flex-wrap: wrap;
+    justify-content: center;
+    /* align-items:space-evenly; */
     
 }
 

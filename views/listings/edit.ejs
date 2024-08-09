@@ -1,4 +1,4 @@
-<% layout("./layouts/boilerplate") %>
+<% layout("/layouts/boilerplate") %>
 <body>
     <form method="post" action="/listings/<%= listing._id %>?_method=patch">
         <input value="<%= listing.title %>" type="text" name="listing[title]"><br>
