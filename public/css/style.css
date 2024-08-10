@@ -48,5 +48,21 @@
     
 }
 
+/* cards */
+.card{
+    border: none !important;
+}
+.card-img-top {
+    border-radius: 1rem;
+    width: 100%;
+}
+
+.card-body{
+    padding: 0 !important;
+}
+.card-text a{
+    font-weight: 400 !important;
+    text-decoration: none !important;
+}
 
 
