@@ -5,7 +5,9 @@ const mongo_url="mongodb://127.0.0.1:27017/wanderlust"
 const Listing =require("./models/listing.js");
 const path =require("path");
 const methodOverride = require("method-override");
-const ejsMate = require('ejs-mate')
+const ejsMate = require('ejs-mate');
+
+
 main().then(()=>{
     console.log("connected to database");
 })
@@ -49,20 +51,20 @@ app.get("/listings/new",(req,res)=>{
 // create route
 app.post("/listings",async (req,res)=>{
     //1a method
-    // let {title ,description ,price ,location,country} =req.body ;
-    // console.log(title);
-    // let list=await new Listing({
-    //             title:title,
-    //             description:description,
-    //             price: price,
-    //             location:location,
-    //             country:country,
-    //         }).save();
+    let {title ,description ,price ,location,country} =req.body ;
+    console.log(title);
+    let list=await new Listing({
+                title:title,
+                description:description,
+                price: price,
+                location:location,
+                country:country,
+            }).save();
     // console.log(list);
 
     // 1b method
-    let listing =req.body.listing
-    await new Listing(listing).save();
+    // let listing =req.body.listing
+    // await new Listing(listing).save();
     // console.log(listing);
     
     res.redirect("/listings");

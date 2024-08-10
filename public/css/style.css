@@ -1,7 +1,11 @@
-/* body{
-    background-color: rgb(213, 234, 59);
-} */
-
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.container{
+    flex:1;
+}
 .navbar{
     height: 5rem;
     background-color: white;
@@ -51,6 +55,7 @@
 /* cards */
 .card{
     border: none !important;
+    
 }
 .card-img-top {
     border-radius: 1rem;
@@ -65,4 +70,41 @@
     text-decoration: none !important;
 }
 
+.listing-link{
+    text-decoration: none !important;
+}
 
+/* card-effect */
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: rgb(181, 199, 238);
+}
+
+/* new listing  */
+.add-btn{
+    background-color: #fe424d;
+    border: none;
+}
+/* edit page  */
+.edit-btn{
+    background-color: #fe424d;
+    border: none;
+
+}
+
+/* show page  */
+.show-img{
+    height: 30vh !important;
+}
+
+.btns{
+    display: flex;
+}
+
+.show-card{
+    padding-left: 0;
+    padding-right: 0;
+}

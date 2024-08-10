@@ -1,19 +1,43 @@
 <% layout("./layouts/boilerplate") %>
 <body>
+    <br>
+    <div class="row">
+        <div class="col-8 offset-2">
     <h3>Fill your Details</h3>
     <!-- 1a method -->
-    <!-- <form method="post" action="/listings">
-        <input placeholder="title" type="text" name="title"><br>
-        <input type="text" name="image" placeholder="enter image url/link"><br><br>
-        <textarea placeholder="description" type="text" name="description"></textarea><br>
-        <input placeholder="price" type="number" name="price"><br>
-        <input placeholder="location" type="text" name="location"><br>
-        <input placeholder="country" type="text" name="country"><br>
-        <button>add</button>
-    </form> -->
-    
-    <!--1b method  -->
     <form method="post" action="/listings">
+        <div class="mb-3"> <!--margin-bottom 3-->
+            <label for="title" class="form-lebel">Title</label>
+            <input placeholder="Add a catchy title" type="text" name="title" class ="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-lebel">Image Link</label>
+            <input type="text" name="image" placeholder="enter image url/link" class ="form-control" ></div>
+        <div class="mb-3">
+            <label for="title" class="form-lebel">description</label>
+            <textarea  type="text" name="description" class ="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-lebel">Price</label>
+            <input placeholder="&#8377; 1200" type="number" name="price" class ="form-control">
+        </div>
+        <div class="row offset">
+        <div class="mb-3 col-md-6">
+            <label for="location" class="form-lebel">location</label>
+            <input placeholder="Basti,Uttar Pradesh" type="text" name="location" class ="form-control">
+        </div>
+        <div class="mb-3 col-md-6 ">
+            <label for="country" class="form-lebel">Country</label>
+            <input placeholder="India" type="text" name="country" class ="form-control">
+        </div>
+        </div>
+        <button class="btn btn-dark add-btn">add</button>
+        <br><br>
+    </form>
+        </div>
+    </div>
+    <!--1b method  -->
+    <!-- <form method="post" action="/listings">
         <input placeholder="title" type="text" name="listing[title]"><br>
         <input type="text" name="listing[image]" placeholder="enter image url/link"><br><br>
         <textarea placeholder="description" type="text" name="listing[description]"></textarea><br>
@@ -21,5 +45,5 @@
         <input placeholder="location" type="text" name="listing[location]"><br>
         <input placeholder="country" type="text" name="listing[country]"><br>
         <button>add</button>
-    </form>
+    </form> -->
 </body>
