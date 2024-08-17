@@ -50,12 +50,16 @@ app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
 })
 
-// create route
+// create new listing route
 app.post("/listings",asyncWrap(async (req,res)=>{
     
         //1a method
+    console.log(req.body);
+    if(!req.body.title){
+        throw new ExpressError(400,"send valid data");
+    }
     let {title ,description ,price ,location,country} =req.body ;
-    console.log(title);
+    // console.log(title);
     let list=await new Listing({
                 title:title,
                 description:description,
@@ -78,6 +82,7 @@ app.post("/listings",asyncWrap(async (req,res)=>{
 app.get("/listings/:id", asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     let listing =await Listing.findById(id);
+    
     if(!listing){
         next();
     }
@@ -86,23 +91,25 @@ app.get("/listings/:id", asyncWrap(async(req,res,next)=>{
 }));
  
 // edit route
-app.get("/listings/:id/edit",asyncWrap(async(req,res)=>{
+app.get("/listings/:id/edit",asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     let listing= await Listing.findById(id);
-
+    
     res.render("listings/edit.ejs",{listing});
 })
 );
 //update route
 
-app.patch("/listings/:id", asyncWrap(async(req,res)=>{
+app.patch("/listings/:id", asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     // let listing =req.body.listing;
     // console.log(listing);
-    await Listing.findByIdAndUpdate(id,{...req.body.listing});
-    if(!await Listing.findByIdAndUpdate(id,{...req.body.listing})){
-        next()
+    console.log(req.body);
+    if(!req.body.listing){
+        throw new ExpressError(400,"send valid data for listing");
     }
+    await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
+    
     res.redirect(`/listings/${id}`);
 }));
 
@@ -117,6 +124,9 @@ app.delete("/listings/:id", asyncWrap(async (req,res)=>{
 
 app.use((err,req,res,next)=>{
     console.log(err.name);
+    if(err.name === "CastError"){ 
+        res.send("given url error");
+    }
     next(err);
 });
 
