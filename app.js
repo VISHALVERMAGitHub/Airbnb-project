@@ -6,7 +6,9 @@ const Listing =require("./models/listing.js");
 const path =require("path");
 const methodOverride = require("method-override");
 const ejsMate = require('ejs-mate');
-
+const { nextTick } = require("process");
+const asyncWrap = require("./utils/asyncWrap.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 main().then(()=>{
     console.log("connected to database");
@@ -49,8 +51,9 @@ app.get("/listings/new",(req,res)=>{
 })
 
 // create route
-app.post("/listings",async (req,res)=>{
-    //1a method
+app.post("/listings",asyncWrap(async (req,res)=>{
+    
+        //1a method
     let {title ,description ,price ,location,country} =req.body ;
     console.log(title);
     let list=await new Listing({
@@ -67,43 +70,64 @@ app.post("/listings",async (req,res)=>{
     // await new Listing(listing).save();
     // console.log(listing);
     
-    res.redirect("/listings");
+    res.redirect("/listings"); 
 })
+);
 
 // show route
-app.get("/listings/:id", async(req,res)=>{
+app.get("/listings/:id", asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     let listing =await Listing.findById(id);
+    if(!listing){
+        next();
+    }
     // console.log(listing);
     res.render("listings/show.ejs",{listing});
-});
+}));
  
 // edit route
-app.get("/listings/:id/edit",async(req,res)=>{
+app.get("/listings/:id/edit",asyncWrap(async(req,res)=>{
     let {id}=req.params;
     let listing= await Listing.findById(id);
 
     res.render("listings/edit.ejs",{listing});
 })
+);
 //update route
 
-app.patch("/listings/:id", async(req,res)=>{
+app.patch("/listings/:id", asyncWrap(async(req,res)=>{
     let {id}=req.params;
     // let listing =req.body.listing;
     // console.log(listing);
     await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    if(!await Listing.findByIdAndUpdate(id,{...req.body.listing})){
+        next()
+    }
     res.redirect(`/listings/${id}`);
-})
+}));
 
 // delete route
-app.delete("/listings/:id", async (req,res)=>{
+app.delete("/listings/:id", asyncWrap(async (req,res)=>{
     let {id}=req.params;
     let deletedlisting =await Listing.findByIdAndDelete({_id:id});
     console.log(deletedlisting);
     res.redirect("/listings");
+}));
+
+
+app.use((err,req,res,next)=>{
+    console.log(err.name);
+    next(err);
+});
+
+app.all("*",(req,res,next)=>{
+    next(new ExpressError(404,"page not fount"));
 })
-
-
+app.use((err,req,res,next)=>{
+    let {statuscode=500,message="some thing wrong"}=err
+    res.status(statuscode).send(message);
+    
+})
 // app.get("/testlisting", async (req, res) => {
 //     let list1=new Listing({
 //         title:"my new villa",
