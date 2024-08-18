@@ -124,18 +124,20 @@ app.delete("/listings/:id", asyncWrap(async (req,res)=>{
 
 app.use((err,req,res,next)=>{
     console.log(err.name);
-    if(err.name === "CastError"){ 
-        res.send("given url error");
-    }
-    next(err);
+    // if(err.name === "CastError"){ 
+    //     res.send("given url error");
+    // }
+    throw new ExpressError(404,"given url error")
+    // next(err);
 });
 
 app.all("*",(req,res,next)=>{
-    next(new ExpressError(404,"page not fount"));
+    throw new ExpressError(404,"page not found");
 })
 app.use((err,req,res,next)=>{
-    let {statuscode=500,message="some thing wrong"}=err
-    res.status(statuscode).send(message);
+    let {statuscode=500,message="some thing wrong"}=err;
+    res.status(statuscode).render("listings/error.ejs",{err})
+    // res.status(statuscode).send(message);
     
 })
 // app.get("/testlisting", async (req, res) => {
