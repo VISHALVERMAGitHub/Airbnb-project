@@ -52,17 +52,24 @@ app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
 })
 
+//schema validation as middleware
+const validateListing =(req,res,next)=>{
+    const { error, value } = listingSchema.validate(req.body);
+    if (error) {
+        // console.log(value);
+        throw new ExpressError(400, error.details[0].message); // Properly handling validation errors
+    }
+    else{
+        next();
+    }
+}
+
 // create new listing route
-app.post("/listings",asyncWrap(async (req,res)=>{
+app.post("/listings",validateListing,asyncWrap(async (req,res)=>{
     
         //1a method
     // console.log(req.body);
-    const { error, value } = listingSchema.validate(req.body);
     
-    if (error) {
-        console.log(error.details);
-        throw new ExpressError(400, error.details[0].message); // Properly handling validation errors
-    }
     let {title ,description ,price ,location,country} =req.body ;
     // console.log(title);
     let list=await new Listing({
@@ -106,15 +113,15 @@ app.get("/listings/:id/edit",asyncWrap(async(req,res,next)=>{
 );
 //update route
 
-app.patch("/listings/:id", asyncWrap(async(req,res,next)=>{
+app.patch("/listings/:id",validateListing , asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     // let listing =req.body.listing;
     // console.log(listing);
     // console.log(req.body.listing);
-    if(!req.body.listing){
+    // if(!req.body.listing){
         
-        throw new ExpressError(404,"send valid data for listing");
-    }
+    //     throw new ExpressError(404,"send valid data for listing");
+    // }
     await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
     
     res.redirect(`/listings/${id}`);
