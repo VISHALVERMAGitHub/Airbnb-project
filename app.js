@@ -9,6 +9,7 @@ const ejsMate = require('ejs-mate');
 const { nextTick } = require("process");
 const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/ExpressError.js");
+const {listingSchema}= require("./schema.js");
 
 main().then(()=>{
     console.log("connected to database");
@@ -29,6 +30,7 @@ app.listen(8080, () => {
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
+// app.use(express.json());
 app.use(methodOverride("_method")); 
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"public")))
@@ -54,9 +56,12 @@ app.get("/listings/new",(req,res)=>{
 app.post("/listings",asyncWrap(async (req,res)=>{
     
         //1a method
-    console.log(req.body);
-    if(!req.body.title){
-        throw new ExpressError(400,"send valid data");
+    // console.log(req.body);
+    const { error, value } = listingSchema.validate(req.body);
+    
+    if (error) {
+        console.log(error.details);
+        throw new ExpressError(400, error.details[0].message); // Properly handling validation errors
     }
     let {title ,description ,price ,location,country} =req.body ;
     // console.log(title);
@@ -67,10 +72,12 @@ app.post("/listings",asyncWrap(async (req,res)=>{
                 location:location,
                 country:country,
             }).save();
-    // console.log(list);
+    console.log(list);
 
     // 1b method
-    // let listing =req.body.listing
+    // let result=listingSchema.validate(req.body);
+    // console.log(result);
+    // let listing =req.body.listing ;
     // await new Listing(listing).save();
     // console.log(listing);
     
@@ -94,7 +101,6 @@ app.get("/listings/:id", asyncWrap(async(req,res,next)=>{
 app.get("/listings/:id/edit",asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     let listing= await Listing.findById(id);
-    
     res.render("listings/edit.ejs",{listing});
 })
 );
@@ -104,9 +110,10 @@ app.patch("/listings/:id", asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     // let listing =req.body.listing;
     // console.log(listing);
-    console.log(req.body);
+    // console.log(req.body.listing);
     if(!req.body.listing){
-        throw new ExpressError(400,"send valid data for listing");
+        
+        throw new ExpressError(404,"send valid data for listing");
     }
     await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
     
@@ -124,19 +131,20 @@ app.delete("/listings/:id", asyncWrap(async (req,res)=>{
 
 app.use((err,req,res,next)=>{
     console.log(err.name);
-    // if(err.name === "CastError"){ 
-    //     res.send("given url error");
-    // }
-    throw new ExpressError(404,"given url error")
-    // next(err);
+    if(err.name === "CastError"){ 
+        // res.send("given url error");
+        throw new ExpressError(400,"cast error")
+    }
+    
+    next(err);
 });
 
 app.all("*",(req,res,next)=>{
     throw new ExpressError(404,"page not found");
 })
 app.use((err,req,res,next)=>{
-    let {statuscode=500,message="some thing wrong"}=err;
-    res.status(statuscode).render("listings/error.ejs",{err})
+    let {status=500,message="some thing wrong"}=err;
+    res.status(status).render("listings/error.ejs",{err})
     // res.status(statuscode).send(message);
     
 })
