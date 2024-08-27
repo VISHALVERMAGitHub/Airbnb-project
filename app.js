@@ -113,15 +113,15 @@ app.get("/listings/:id/edit",asyncWrap(async(req,res,next)=>{
 );
 //update route
 
-app.patch("/listings/:id",validateListing , asyncWrap(async(req,res,next)=>{
+app.patch("/listings/:id",asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     // let listing =req.body.listing;
     // console.log(listing);
     // console.log(req.body.listing);
-    // if(!req.body.listing){
+    if(!req.body.listing){
         
-    //     throw new ExpressError(404,"send valid data for listing");
-    // }
+        throw new ExpressError(404,"send valid data for listing");
+    }
     await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
     
     res.redirect(`/listings/${id}`);
