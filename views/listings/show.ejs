@@ -1,7 +1,7 @@
 <% layout("./layouts/boilerplate") %>
   <div class="row mt-2">
     <div class="col-8 offset-3">
-    <h3>listing details</h3>
+    <h3><%= listing.title %></h3>
     </div>
     
     <div class="card col-6 offset-3 show-card" >
@@ -11,11 +11,10 @@
           alt="listing-image">
         <div class="card-body">
           <p class="card-text">
-            <b><%= listing.title %></b>
-            <p><%= listing.description %></p>
-            <p>&#8377;<%= listing.price.toLocaleString("en-IN") %></p>
-            <p><%= listing.location %></p>
-            <p><%= listing.country %></p>
+          <p><%= listing.description %></p>
+          <p>&#8377;<%= listing.price.toLocaleString("en-IN") %></p>
+          <p><%= listing.location %></p>
+          <p><%= listing.country %></p>
           </p>
           <div class="btns mb-3">
             <a href="/listings/<%= listing._id %>/edit" class="btn edit-btn  ">edit </a><br>
@@ -23,7 +22,27 @@
               <button class="btn btn-dark offset-1 ">delete </button>
             </form>
           </div>
-          
         </div>
       </div>
+          <div class="col-8 offset-3 mb-3">
+            <hr/>
+            <h4>leave your review</h4>
+            <form action="">
+              <div class="mb-3 mt-3">
+                <label for="rating" class="form-lebel">Rating</label>
+                <input type="range" id="rating " name="review[reting]" class="form-range" min="0" max="5">
+                <div class="range1 " >
+                  <h5>0</h5><h5>1</h5><h5>2</h5><h5>3</h5><h5>4</h5><h5>5</h5>
+                </div>
+              </div>
+
+              <div class="mb-3 mt-3"> 
+                <label for="comments" class="form-lebel">Comment</label>
+                <textarea name="review[comment]" id="comment" placeholder="write your comment" rows="5" cols="30" class="form-control"></textarea>
+              </div>
+              
+              <button class="btn btn-outline-dark ">submit</button>
+            </form>
+          </div>
+        
   </div>
