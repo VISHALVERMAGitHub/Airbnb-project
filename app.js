@@ -10,6 +10,7 @@ const { nextTick } = require("process");
 const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema}= require("./schema.js");
+const Review =require("./models/review.js");
 
 main().then(()=>{
     console.log("connected to database");
@@ -135,6 +136,16 @@ app.delete("/listings/:id", asyncWrap(async (req,res)=>{
     res.redirect("/listings");
 }));
 
+// reviews ka post route
+app.post("/listings/:id/reviews", async(req,res)=>{
+    let listing=await Listing.findById({_id:req.params.id});
+    let newReview=new Review(req.body.review);
+    listing.reviews.push(newReview);
+    await newReview.save();
+    await listing.save();
+    res.redirect(`/listings/${listing._id}`)
+
+})
 
 app.use((err,req,res,next)=>{
     console.log(err.name);
