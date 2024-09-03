@@ -9,7 +9,7 @@ const ejsMate = require('ejs-mate');
 const { nextTick } = require("process");
 const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/ExpressError.js");
-const {listingSchema}= require("./schema.js");
+const {listingSchema,reviewSchema}= require("./schema.js");
 const Review =require("./models/review.js");
 
 main().then(()=>{
@@ -34,7 +34,7 @@ app.use(express.urlencoded({extended:true}));
 // app.use(express.json());
 app.use(methodOverride("_method")); 
 app.engine('ejs', ejsMate);
-app.use(express.static(path.join(__dirname,"public")))
+app.use(express.static(path.join(__dirname,"public")));
 
 app.get("/", (req, res) => {
     res.send("hi,i am responce");
@@ -59,6 +59,21 @@ const validateListing =(req,res,next)=>{
     if (error) {
         // console.log(value);
         throw new ExpressError(400, error.details[0].message); // Properly handling validation errors
+    }
+    else{
+        next();
+    }
+}
+
+
+// validateReview schema as server side validations by joi 
+const validateReview =(req,res,next)=>{
+    const {error} = reviewSchema.validate(req.body);
+    if (error) {
+        // console.log(value);
+        let errMsg =error.details.map((err)=>err.message).join(",");
+        // console.log(errMsg);
+        throw new ExpressError(400, errMsg); // Properly handling validation errors
     }
     else{
         next();
@@ -137,15 +152,16 @@ app.delete("/listings/:id", asyncWrap(async (req,res)=>{
 }));
 
 // reviews ka post route
-app.post("/listings/:id/reviews", async(req,res)=>{
+app.post("/listings/:id/reviews", validateReview , asyncWrap( async(req,res)=>{
     let listing=await Listing.findById({_id:req.params.id});
     let newReview=new Review(req.body.review);
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();
-    res.redirect(`/listings/${listing._id}`)
+    res.redirect(`/listings/${listing._id}`);
 
 })
+);
 
 app.use((err,req,res,next)=>{
     console.log(err.name);
