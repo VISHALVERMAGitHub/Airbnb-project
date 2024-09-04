@@ -11,6 +11,7 @@ const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema,reviewSchema}= require("./schema.js");
 const Review =require("./models/review.js");
+// const review = require("./models/review.js");
 
 main().then(()=>{
     console.log("connected to database");
@@ -111,7 +112,7 @@ app.post("/listings",validateListing,asyncWrap(async (req,res)=>{
 // show route
 app.get("/listings/:id", asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
-    let listing =await Listing.findById(id);
+    let listing =await Listing.findById(id).populate("reviews");
     
     if(!listing){
         next();
@@ -163,6 +164,15 @@ app.post("/listings/:id/reviews", validateReview , asyncWrap( async(req,res)=>{
 })
 );
 
+// delete review route
+
+app.delete("/listings/:id/reviews/:reviewId",async(req,res,next)=>{
+    let {id,reviewId}=req.params;
+    await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
+})
+
 app.use((err,req,res,next)=>{
     console.log(err.name);
     if(err.name === "CastError"){ 
@@ -182,6 +192,8 @@ app.use((err,req,res,next)=>{
     // res.status(statuscode).send(message);
     
 })
+
+
 // app.get("/testlisting", async (req, res) => {
 //     let list1=new Listing({
 //         title:"my new villa",
