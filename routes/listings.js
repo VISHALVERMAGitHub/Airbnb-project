@@ -46,7 +46,7 @@ let list=await new Listing({
             location:location,
             country:country,
         }).save();
-console.log(list);
+// console.log(list);
 
 // 1b method
 // let result=listingSchema.validate(req.body);
@@ -54,7 +54,7 @@ console.log(list);
 // let listing =req.body.listing ;
 // await new Listing(listing).save();
 // console.log(listing);
-
+req.flash("success","New listing Created!")
 res.redirect("/listings"); 
 })
 );
@@ -65,7 +65,9 @@ router.get("/:id", asyncWrap(async(req,res,next)=>{
     let listing =await Listing.findById(id).populate("reviews");
     
     if(!listing){
-        next();
+        // next();// it is write by me and error  is show by better approach :it's show by flash
+        req.flash("error","Your requested listing does not existing")
+        res.redirect("/listings");
     }
     // console.log(listing);
     res.render("listings/show.ejs",{listing});
@@ -75,6 +77,11 @@ router.get("/:id", asyncWrap(async(req,res,next)=>{
 router.get("/:id/edit",asyncWrap(async(req,res,next)=>{
     let {id}=req.params;
     let listing= await Listing.findById(id);
+    if(!listing){
+        // next();// it is write by me and error  is show by better approach :it's show by flash
+        req.flash("error","Your requested listing does not existing")
+        res.redirect("/listings");
+    }
     res.render("listings/edit.ejs",{listing});
 })
 );
@@ -90,7 +97,7 @@ router.patch("/:id",asyncWrap(async(req,res,next)=>{
         throw new ExpressError(404,"send valid data for listing");
     }
     await Listing.findByIdAndUpdate(req.params.id,{...req.body.listing});
-    
+    req.flash("success","listing updated!")
     res.redirect(`/listings/${id}`);
 }));
 
@@ -99,6 +106,7 @@ router.delete("/:id", asyncWrap(async (req,res)=>{
     let {id}=req.params;
     let deletedlisting =await Listing.findByIdAndDelete({_id:id});
     console.log(deletedlisting);
+    req.flash("success","listing deleted!");
     res.redirect("/listings");
 }));
 
