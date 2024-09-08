@@ -14,6 +14,9 @@ const listings =require("./routes/listings.js");
 const reviews = require("./routes/review.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
 main().then(()=>{
     console.log("connected to database");
@@ -56,6 +59,18 @@ const sessionOption ={
 app.use(session(sessionOption));
 app.use(flash());
 
+app.use(passport.initialize());  //npm : passport 
+app.use(passport.session()); //npm : passport 
+
+// use static authenticate method of model in LocalStrategy
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success"); // success is object
     // console.log(res.locals.success);
@@ -63,6 +78,14 @@ app.use((req,res,next)=>{
 ;    next();
 })
 
+app.get("/demoUser",async(req,res)=>{
+    let fakeUser = new User({
+        email:"studen@gmail.com",
+        username:"delta-student",
+    });
+    let registeredUser = await User.register(fakeUser,"helloworld");
+    res.send(registeredUser);
+})
 
 
 app.use("/listings",listings);
