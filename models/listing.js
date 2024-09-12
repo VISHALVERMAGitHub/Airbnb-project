@@ -23,7 +23,12 @@ const listingSchema =new Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"Review",
         }
-    ]
+    ],
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+
+    }
 })
 const Listing = mongoose.model("Listing",listingSchema) ;
 module.exports=Listing;

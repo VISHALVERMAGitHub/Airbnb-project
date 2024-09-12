@@ -12,6 +12,16 @@
           <a class="nav-link" href="/listings/new">Add new listing</a>
           
         </div>
+        <div class="navbar-nav ms-auto">
+          <% if (!curruser) { %>
+            <a class="nav-link"  href="/signup"><b>signup</b></a>
+            <a class="nav-link" href="/login"><b>login</b></a>
+          <% } %>
+          <% if (curruser) { %>
+            <a class="nav-link" href="/logout"><b>logout</b></a>
+           <% } %>
+          
+        </div>
       </div>
     </div>
   </nav>
