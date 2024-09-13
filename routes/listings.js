@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const asyncWrap = require("../utils/asyncWrap.js");
-const listingController = require("../controller/listing.js")
+const listingController = require("../controller/listing.js");
+const multer  = require('multer');
+const {storage} = require("../cloudConfig.js");
+const upload = multer({ storage })
 
 const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
 //schema validation as middleware
@@ -11,8 +14,8 @@ const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
 // create new listing route
 router.route("/")
     .get(listingController.index)
-    .post(isloggedIn, validateListing, asyncWrap(listingController.createNewListing));
-
+    .post(isloggedIn, upload.single('image') , validateListing, asyncWrap(listingController.createNewListing));
+    
 // new get route
 router.get("/new", isloggedIn, listingController.renderNewForm);
 

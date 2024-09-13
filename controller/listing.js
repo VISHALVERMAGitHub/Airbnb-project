@@ -18,6 +18,10 @@ module.exports.createNewListing = async (req, res) => {
 
     let { title, description, price, location, country } = req.body;
     // console.log(title);
+    let url=req.file.path;
+    let fileName =req.file.filename;
+    // console.log(url ,"..",fileName);
+    
     let list = new Listing({
         title: title,
         description: description,
@@ -26,6 +30,7 @@ module.exports.createNewListing = async (req, res) => {
         country: country,
         owner: req.user._id,
     });
+    list.image={url , fileName};
     (await list).save();
     // console.log(list);
 
