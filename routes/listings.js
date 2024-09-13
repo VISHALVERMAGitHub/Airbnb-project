@@ -7,29 +7,25 @@ const listingController = require("../controller/listing.js")
 const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
 //schema validation as middleware
 
-
 // index route
-router.get("/", listingController.index);
-
+// create new listing route
+router.route("/")
+    .get(listingController.index)
+    .post(isloggedIn, validateListing, asyncWrap(listingController.createNewListing));
 
 // new get route
-router.get("/new", isloggedIn, listingController.renderNewForm)
-
-// create new listing route
-router.post("/", isloggedIn, validateListing, asyncWrap(listingController.createNewListing)
-);
+router.get("/new", isloggedIn, listingController.renderNewForm);
 
 // show route
-router.get("/:id", asyncWrap(listingController.showListing));
+//update route
+// delete route
+router.route("/:id")
+    .get( asyncWrap(listingController.showListing))
+    .patch( isloggedIn, isOwner, asyncWrap(listingController.updateListing))
+    .delete( isloggedIn, isOwner, asyncWrap(listingController.destroyListing));
 
 // edit route
 router.get("/:id/edit", isloggedIn, asyncWrap(listingController.renderEditForm)
 );
-//update route
-
-router.patch("/:id", isloggedIn, isOwner, asyncWrap(listingController.updateListing));
-
-// delete route
-router.delete("/:id", isloggedIn, isOwner, asyncWrap(listingController.destroyListing));
 
 module.exports = router;
