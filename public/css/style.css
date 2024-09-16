@@ -94,6 +94,10 @@ body{
     border: none;
 
 }
+.preview{
+    height: 7rem;
+    width: 9rem;
+}
 
 /* show page  */
 .show-img{
@@ -114,3 +118,10 @@ body{
     display: flex !important;
     justify-content: space-between;
 }
+
+
+/* map */
+#map {
+    height: 500px;
+    width: 100%;
+  }

@@ -30,7 +30,7 @@ module.exports.createNewListing = async (req, res) => {
         country: country,
         owner: req.user._id,
     });
-    list.image={url , fileName};
+    list.image={fileName,url};
     (await list).save();
     // console.log(list);
 
@@ -64,7 +64,9 @@ module.exports.renderEditForm = async (req, res, next) => {
         req.flash("error", "Your requested listing does not existing");
         res.redirect("/listings");
     }
-    res.render("listings/edit.ejs", { listing });
+    let originalurl =listing.image.url;
+    originalurl =originalurl.replace("/upload","/upload/h_300,w_270");
+    res.render("listings/edit.ejs", { listing , originalurl});
 }
 
 module.exports.updateListing = async (req, res, next) => {
@@ -76,7 +78,14 @@ module.exports.updateListing = async (req, res, next) => {
 
         throw new ExpressError(404, "send valid data for listing");
     }
-    await Listing.findByIdAndUpdate(req.params.id, { ...req.body.listing });
+    let listing = await Listing.findByIdAndUpdate(req.params.id, {...req.body.listing });
+    if(typeof req.file !=="undefined"){
+        let url=req.file.path;
+        let fileName =req.file.filename;
+        listing.image={url,fileName};
+        await listing.save();
+    }
+
     req.flash("success", "listing updated!")
     res.redirect(`/listings/${id}`);
 }

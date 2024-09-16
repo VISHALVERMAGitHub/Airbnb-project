@@ -5,7 +5,8 @@ if(process.env.NODE_ENV != "production"){
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const mongo_url = "mongodb://127.0.0.1:27017/wanderlust"
+// const mongo_url = "mongodb://127.0.0.1:27017/wanderlust"
+const db_url = process.env.ATLASDB_URL
 
 const path = require("path");
 const methodOverride = require("method-override");
@@ -19,6 +20,7 @@ const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -32,7 +34,7 @@ main().then(() => {
     })
 
 async function main() {
-    await mongoose.connect(mongo_url);
+    await mongoose.connect(db_url); 
 }
 
 
@@ -48,7 +50,19 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
+const store = MongoStore.create({
+    mongoUrl:db_url,
+    crypto :{
+        secret:"mysupersecretstring"
+    },
+    touchAfter:24*3600
+})
+store.on("error",()=>{
+    console.log("error in mongo session store" ,err);
+    
+}); 
 const sessionOption = {
+    store,
     secret: "mysupersecretstring",
     resave: false,
     saveUninitialized: true,
@@ -59,9 +73,7 @@ const sessionOption = {
     }
 
 }
-app.get("/", (req, res) => {
-    res.send("hi,i am responce");
-});
+
 app.use(session(sessionOption));
 app.use(flash());
 

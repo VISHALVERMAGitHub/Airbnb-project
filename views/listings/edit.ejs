@@ -2,8 +2,13 @@
 <body>
     <div class="row">
         <div class="col-8 offset-2">
-    <form method="post" action="/listings/<%= listing._id %>?_method=patch" novalidate class="needs-validation">
+    <form method="post" action="/listings/<%= listing._id %>?_method=patch" enctype="multipart/form-data" novalidate class="needs-validation">
         <h3>Edit Your Details</h3>
+        <div class="mb-3">
+            <label for="image" class="form-lebel">Preview </label>
+            <img src=<%= originalurl %> class="preview"  alt="">
+            <br>
+        </div>
         <div class="mb-3">
             <label for="title" class="form-lebel">Title</label>
             <input value="<%= listing.title %>" type="text" name="listing[title]" class="form-control" required>
@@ -11,9 +16,8 @@
             <div class="invalid-feedback">Please enter valid title</div>
             </div>
         <div class="mb-3">
-            <label for="image" class="form-lebel">Image link </label>
-            <input value="<%= listing.image %>" type="text" name="listing[image]" class="form-control" required>
-            
+            <label for="image" class="form-lebel">Upload Image </label>
+            <input  type="file" name="listing[image]" class="form-control" >
         </div>
         
         <div class="mb-3">

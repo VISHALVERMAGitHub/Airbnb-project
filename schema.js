@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require ('joi');
 const review = require('./models/review');
 
 module.exports.listingSchema = Joi.object({
